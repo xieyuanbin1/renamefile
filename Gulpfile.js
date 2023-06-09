@@ -36,11 +36,14 @@ function zipMac(cb) {
   cb();
 }
 
-const build = series(zipWin, zipMac);
-const zip = parallel(zipWin, zipMac);
+function build (cb) {
+  console.warn('[警告] 本项目已经禁用 gulp 默认任务')
+  cb()
+}
 
 module.exports = {
   clean,
-  zip,
+  zipWin,
+  zipMac,
   default: build
 };

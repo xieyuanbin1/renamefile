@@ -9,8 +9,8 @@
     "build": "tsc",
     "pkg:win": "pkg dist/* --output out-win/run --targets node16-win -C gz",
     "pkg:mac": "pkg dist/* --output out-mac/run --targets node16-macos -C gz",
-    "pkg": "npm run pkg:win && npm run pkg:mac",
-    "postpkg": "gulp zip",
+    "postpkg:win": "gulp zipWin",
+    "postpkg:mac": "gulp zipMac",
     "clean": "rimraf *.zip out*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
