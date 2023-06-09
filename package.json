@@ -7,9 +7,11 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
-    "pkg": "pkg dist/* --output out/run --targets node16-macos,node16-win -C gz",
+    "pkg:win": "pkg dist/* --output out-win/run --targets node16-win -C gz",
+    "pkg:mac": "pkg dist/* --output out-mac/run --targets node16-macos -C gz",
+    "pkg": "npm run pkg:win && npm run pkg:mac",
     "postpkg": "gulp zip",
-    "clean": "gulp clean",
+    "clean": "rimraf *.zip out*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

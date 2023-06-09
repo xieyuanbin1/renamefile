@@ -1,32 +1,46 @@
-const path = require('path')
-const { series, src, dest } = require('gulp')
-const gzip = require('gulp-zip')
-const { rimrafSync } = require('rimraf')
+const path = require('path');
+const { parallel, series, src, dest } = require('gulp');
+const gzip = require('gulp-zip');
+const { rimrafSync } = require('rimraf');
 
 const config = {
-  get dist () {
-    return 'out'
+  get win() {
+    return 'out-win';
   },
-  get package () {
+  get mac() {
+    return 'out-mac';
+  },
+  get package() {
     // return require(path.join(__dirname, 'package.json'))
-    return require(path.join(__dirname, 'package.json'))
+    return require(path.join(__dirname, 'package.json'));
   }
-}
+};
 
-function clean () {
-  return rimrafSync(config.dist)
+function clean() {
+  return rimrafSync([config.win, config.mac]);
 }
 
 // zip
-function zip () {
-  const version = config.package.version
-  return src(config.dist + '/**').pipe(gzip(`rename-v${version}.zip`)).pipe(dest('.'))
+function zipWin(cb) {
+  const version = config.package.version;
+  src(config.win + '/**')
+    .pipe(gzip(`rename-win-v${version}.zip`))
+    .pipe(dest('.'));
+  cb();
+}
+function zipMac(cb) {
+  const version = config.package.version;
+  src(config.mac + '/**')
+    .pipe(gzip(`rename-mac-v${version}.zip`))
+    .pipe(dest('.'));
+  cb();
 }
 
-const build = series(clean, zip)
+const build = series(zipWin, zipMac);
+const zip = parallel(zipWin, zipMac);
 
 module.exports = {
   clean,
   zip,
   default: build
-}
+};
