@@ -5,10 +5,10 @@ const { rimrafSync } = require('rimraf');
 
 const config = {
   get win() {
-    return 'out-win';
+    return 'release/out-win';
   },
   get mac() {
-    return 'out-mac';
+    return 'release/out-mac';
   },
   get package() {
     // return require(path.join(__dirname, 'package.json'))
@@ -25,14 +25,14 @@ function zipWin(cb) {
   const version = config.package.version;
   src(config.win + '/**')
     .pipe(gzip(`rename-win-v${version}.zip`))
-    .pipe(dest('.'));
+    .pipe(dest(path.resolve('.', 'release', version)));
   cb();
 }
 function zipMac(cb) {
   const version = config.package.version;
   src(config.mac + '/**')
     .pipe(gzip(`rename-mac-v${version}.zip`))
-    .pipe(dest('.'));
+    .pipe(dest(path.resolve('.', 'release', version)));
   cb();
 }
 
