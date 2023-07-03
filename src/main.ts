@@ -1,9 +1,22 @@
-import * as ini from 'ini'
-import fs from 'fs'
 import path from 'path'
-import { rename, readdir, access, writeFile } from 'fs/promises'
+import { rename, readdir } from 'fs/promises'
+import Conf, { Schema } from 'conf'
+import { parse, stringify } from 'yaml'
 
-const ENV_PATH = path.resolve(process.cwd(), "config.ini");
+const schema: Schema<any> = {
+  VERSION: { type: 'string'},
+  DIRPATH: { type: 'string', default: '' },
+  SRCPART: { type: 'string', default: '' },
+  REPLACE: { type: 'string', default: '' },
+}
+
+const config = new Conf({
+  fileExtension: 'yaml',
+  serialize: stringify,
+  deserialize: parse,
+  cwd: process.cwd(),
+  schema
+})
 
 /**
  * 批量修改文件名称
@@ -11,23 +24,6 @@ const ENV_PATH = path.resolve(process.cwd(), "config.ini");
  * SRCPART            文件名称开头相同的部分
  * REPLACE            需要替换的部分 默认为空 就是删除相同部分
  */
-
-async function parseEnv () {
-  try {
-    await access(ENV_PATH, fs.constants.F_OK)
-    const config: Record<string, any> = ini.parse(fs.readFileSync(ENV_PATH, 'utf-8'))
-    const env: Record<string, any> = {}
-    for(const item in config) {
-      if(typeof config[item] === 'string') {
-        env[item] = config[item]
-      }
-    }
-    return env
-  } catch (error) {
-    await writeFile(ENV_PATH, '', 'utf8')
-    return {}
-  }
-}
 
 async function main (dirpath: string, src: string, replace: string) {
   const contentList = await readdir(dirpath, { withFileTypes: true })
@@ -43,10 +39,9 @@ async function main (dirpath: string, src: string, replace: string) {
 
 async function boot() {
   try {
-    const env = await parseEnv();
-    console.log("env::", env);
-    if (env.DIRPATH && env.SRCPART) {
-      main(env.DIRPATH, env.SRCPART, env.REPLACE || "")
+    console.log("env::", config.store);
+    if (config.get('DIRPATH') && config.get('SRCPART')) {
+      main(config.get('DIRPATH'), config.get('SRCPART'), config.get('REPLACE') || "")
     }
   } catch (error) {
     throw error;

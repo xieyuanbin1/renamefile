@@ -1,6 +1,6 @@
 {
   "name": "renamefile",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "rename files",
   "main": "dist/main.js",
   "bin": "dist/main.js",
@@ -22,7 +22,6 @@
     "assets": []
   },
   "devDependencies": {
-    "@types/ini": "^1.3.31",
     "@types/node": "^20.2.5",
     "gulp": "^4.0.2",
     "gulp-zip": "^5.1.0",
@@ -32,6 +31,7 @@
     "typescript": "^5.1.3"
   },
   "dependencies": {
-    "ini": "^4.1.1"
+    "conf": "^10.2.0",
+    "yaml": "^2.3.1"
   }
 }

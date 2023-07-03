@@ -8,7 +8,7 @@
 # rename-mac
 ./run
 
-# 第一次执行会在目录下生成一个 config.ini
+# 配置 config.yml
 ```
 
 - 配置参数
